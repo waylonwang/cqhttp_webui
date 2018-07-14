@@ -1,6 +1,6 @@
-# aaa
+# CQHTTP WebUI
 
-> A Vue.js project
+> 以 https://github.com/richardchien/coolq-http-api/ 为后端的WeUI
 
 ## Build Setup
 
