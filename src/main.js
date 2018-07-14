@@ -6,11 +6,9 @@ import router from './router'
 import 'mdui/dist/css/mdui.css'
 import SettingPanel from '@/components/SettingPanel'
 import VueCookie from 'vue-cookie'
-import VeeValidate from 'vee-validate'
 Vue.component('setting-panel', SettingPanel)
 
 Vue.use(VueCookie)
-Vue.use(VeeValidate)
 
 /* eslint-disable no-new */
 Vue.config.productionTip = false
