@@ -4,19 +4,16 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import 'mdui/dist/css/mdui.css'
-import mdui from 'mdui'
-
+import SettingPanel from '@/components/SettingPanel'
 import VueCookie from 'vue-cookie'
-Vue.use(VueCookie)
-
 import VeeValidate from 'vee-validate'
+Vue.component('setting-panel', SettingPanel)
+
+Vue.use(VueCookie)
 Vue.use(VeeValidate)
 
-Vue.config.productionTip = false
 /* eslint-disable no-new */
-
-import SettingPanel from '@/components/SettingPanel'
-Vue.component('setting-panel', SettingPanel)
+Vue.config.productionTip = false
 
 new Vue({
   el: '#app',

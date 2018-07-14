@@ -74,40 +74,35 @@
               </div></div></div></div>
       </div>
     </div>
-
     <h1 @click="test">test</h1>
     <button class="mdui-btn mdui-btn-raised" @click="clear_cookie">Clear Cookie</button>
-
-
 </div>
 </template>
 
 <script>
-import mdui from 'mdui'
 export default {
   name: 'Overview',
   props: ['message_rate', 'qq_online', 'qq_info', 'version_info', 'ws_exec'],
   computed: {
-    user_pic_link: function() {
-      return this.qq_info ?  "http://q4.qlogo.cn/g?b=qq&s=0&nk=" + this.qq_info.user_id : null
+    user_pic_link: function () {
+      return this.qq_info ? 'http://q4.qlogo.cn/g?b=qq&s=0&nk=' + this.qq_info.user_id : null
     }
   },
   methods: {
-    test() {
-      this.ws_exec("send_private_msg", {
+    test () {
+      this.ws_exec('send_private_msg', {
         user_id: 1172380450,
         message: this.user_pic_link
       }).then((event) => {
-        console.log("msg_id", event.data.message_id)
+        console.log('msg_id', event.data.message_id)
       })
     },
-    clear_cookie() {
-      this.$cookie.delete("ws_host")
-      this.$cookie.delete("ws_token")
+    clear_cookie () {
+      this.$cookie.delete('ws_host')
+      this.$cookie.delete('ws_token')
     }
   }
 }
 </script>
-
 <style>
 </style>

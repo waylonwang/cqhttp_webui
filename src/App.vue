@@ -16,7 +16,6 @@
           <span>|</span>
           <span :class=' ws ? ( ws.readyState==1 ? "mdui-text-color-blue" : "mdui-text-color-red" ) : "mdui-text-color-red" '>{{ ws ? (ws.readyState==1 ? "O" : "X") : "X" }}</span>
         </a>
-        
         <a href="https://github.com/ma6254/" target="view_window" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">help</i></a>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon" @click="open_setting"><i class="mdui-icon material-icons">settings</i></a>
       </div>
@@ -45,266 +44,268 @@ mdui.mutation()
 
 let e = {
   name: 'App',
-  data() {
-    return{
+  data () {
+    return {
       timer_id: null,
       timer_id_reconnect: null,
       ws: null,
-      ws_host: "ws://192.168.0.163:7980",
-      ws_token: "12345",
+      ws_host: 'ws://192.168.0.163:7980',
+      ws_token: '12345',
       message_count: 0,
       message_rate: null,
       message_rate_count: 0,
-      message_rate_interval: 20*1000,
+      message_rate_interval: 20 * 1000,
       message_rate_timer_id: null,
       qq_online: null,
       qq_info: null,
       version_info: null,
-
-      global_snackbar: null,
-      
-      setting_dialog: null,
-      setting_ws: null,
-      setting_ws_host: null,
-      setting_ws_token: null,
-
-      is_pattern_setting_ws_host: true,
+      // snackbar
+      global_snackbar: null
     }
   },
   computed: {
   },
-  mounted() {
-    console.log("mounted")
+  mounted () {
+    console.log('mounted')
     this.ws_init()
   },
-  beforeDestroy() {
-    console.log("beforeDestroy")
-    if (this.ws)this.ws.close()
+  beforeDestroy () {
+    console.log('beforeDestroy')
+    if (this.ws) this.ws.close()
     this.destroy()
   },
   watch: {
   },
   methods: {
-    aaa() {
+    aaa () {
       var drawer = new mdui.Drawer('#drawer')
       drawer.toggle()
     },
-    jump(path) {
-      window.location.href= path
+    jump (path) {
+      window.location.href = path
     },
-    open_setting() {
-      //console.log('setting_open')
+    open_setting () {
+      // console.log('setting_open')
       this.$refs.setting_panel.open()
     },
-    setting_oncancle() {
-      if ((this.ws != null ) && (this.ws.readyState == 1)) {
+    setting_oncancle () {
+      if (this.ws && (this.ws.readyState === 1)) {
         return
       }
-      if (! this.check_cookie()) {
+      if (!this.check_cookie()) {
         if (this.global_snackbar) this.global_snackbar.close()
-        this.global_snackbar = mdui.snackbar({message: '参数缺失，请设置参数', timeout: 0, closeOnOutsideClick: false, onOpened: ()=>{
-          this.open_setting()
-        }})
-        return
+        this.global_snackbar = mdui.snackbar(
+          {
+            message: '参数缺失，请设置参数',
+            timeout: 0,
+            closeOnOutsideClick: false,
+            onOpened: () => {
+              this.open_setting()
+            }
+          }
+        )
       }
     },
-    setting_onconfirm() {
-      if(this.ws){
+    setting_onconfirm () {
+      if (this.ws) {
         this.ws.close()
         this.ws = null
       }
       this.destroy()
       this.ws_init()
     },
-    check_cookie() {
-      if (! this.$cookie.get('ws_host')) {
+    check_cookie () {
+      if (!this.$cookie.get('ws_host')) {
         return false
       }
       return true
     },
-    async ws_init() {
-      console.log("ws_init","start.")
-      if (! this.check_cookie()) {
-        this.global_snackbar = mdui.snackbar({message: '参数缺失，请设置参数', timeout: 0, closeOnOutsideClick: false, onOpened: ()=>{
-          this.open_setting()
-        }})
+    async ws_init () {
+      console.log('ws_init', 'start.')
+      if (!this.check_cookie()) {
+        this.global_snackbar = mdui.snackbar(
+          {
+            message: '参数缺失，请设置参数',
+            timeout: 0,
+            closeOnOutsideClick: false,
+            onOpened: () => {
+              this.open_setting()
+            }
+          }
+        )
         return
       }
       this.ws_host = this.$cookie.get('ws_host')
       this.ws_token = this.$cookie.get('ws_token')
-      if ((this.ws != null ) && (this.ws.readyState == 1)) {
+      if (this.ws && (this.ws.readyState === 1)) {
         this.global_snackbar = mdui.snackbar({message: '重复连接'})
         return
       }
-      this.ws_exec("get_status")
-      .then((event) => {
-        clearInterval(this.timer_id_reconnect)
-        this.timer_id_reconnect = null
-        
-        this.timer_tick()
-        this.refresh_login_info()
-        this.refresh_version_info()
-        this.ws = new WebSocket(this.ws_host + "/event/?access_token="+ this.ws_token)
-        this.ws.onopen = this.ws_onopen
-        this.ws.onmessage = this.ws_onmessage
-        this.ws.onerror = this.ws_onerror
-        this.ws.onclose = this.ws_onclose
-      })
-      .catch((event) => {
-        if (event == "authorization failed") {
-          console.log("ws_init_catch", event)
-          this.global_snackbar = mdui.snackbar({message: 'Token无效' , timeout: 0, closeOnOutsideClick: false, buttonText: "x"})
-          return
-        }
-        if (event == "connect failed") {
-          console.log("ws_init_catch", event)
-          if (this.global_snackbar) this.global_snackbar.close()
-          this.global_snackbar = mdui.snackbar({message: '无法连接', timeout: 0})
-          if (this.timer_id_reconnect) {
-            clearInterval(this.timer_id_reconnect)
+      this.ws_exec('get_status')
+        .then((event) => {
+          clearInterval(this.timer_id_reconnect)
+          this.timer_id_reconnect = null
+          this.timer_tick()
+          this.refresh_login_info()
+          this.refresh_version_info()
+          this.ws = new WebSocket(this.ws_host + '/event/?access_token=' + this.ws_token)
+          this.ws.onopen = this.ws_onopen
+          this.ws.onmessage = this.ws_onmessage
+          this.ws.onerror = this.ws_onerror
+          this.ws.onclose = this.ws_onclose
+        })
+        .catch((event) => {
+          if (event === 'authorization failed') {
+            console.log('ws_init_catch', event)
+            this.global_snackbar = mdui.snackbar({message: 'Token无效', timeout: 0, closeOnOutsideClick: false, buttonText: 'x'})
+            return
           }
-          this.timer_id_reconnect = setTimeout(this.ws_init,5000)
-          return
-        }
-        if (event.status) {
-          console.log("ws_init_catch", event)
-          return
-        }
-        console.log("ws_init_catch_unknow", event)
-      })
+          if (event === 'connect failed') {
+            console.log('ws_init_catch', event)
+            if (this.global_snackbar) this.global_snackbar.close()
+            this.global_snackbar = mdui.snackbar({message: '无法连接', timeout: 0})
+            if (this.timer_id_reconnect) {
+              clearInterval(this.timer_id_reconnect)
+            }
+            this.timer_id_reconnect = setTimeout(this.ws_init, 5000)
+            return
+          }
+          if (event.status) {
+            console.log('ws_init_catch', event)
+            return
+          }
+          console.log('ws_init_catch_unknow', event)
+        })
     },
-    ws_onopen(event) {
-      console.log("ws_init", "success ")
-      if(this.global_snackbar) this.global_snackbar.close()
+    ws_onopen (event) {
+      console.log('ws_init', 'success')
+      if (this.global_snackbar) this.global_snackbar.close()
       this.global_snackbar = mdui.snackbar({message: '连接成功', timeout: 1000})
       this.timer_id = setInterval(this.timer_tick, 30000)
       this.message_rate = 0
-      this.message_rate_timer_id =  setInterval(() => {
-        let new_rate = this.message_rate_count * ( 60000 / this.message_rate_interval )
-        if (this.message_rate != new_rate){
-          console.log("message_rate_update", new_rate)
+      this.message_rate_timer_id = setInterval(() => {
+        let NewRate = this.message_rate_count * (60000 / this.message_rate_interval)
+        if (this.message_rate !== NewRate) {
+          console.log('message_rate_update', NewRate)
         }
-        this.message_rate = new_rate
+        this.message_rate = NewRate
         this.message_rate_count = 0
       }, this.message_rate_interval)
     },
-    ws_onmessage(event) {
-      if (event.data == "authorization failed") {
-        //mdui.snackbar({message: 'token无效'});
+    ws_onmessage (event) {
+      if (event.data === 'authorization failed') {
+        // mdui.snackbar({message: 'token无效'});
         this.ws.close()
         return
       }
-      this.message_rate_count +=1 ;
-      //console.log("onmessage", event.data)
+      this.message_rate_count += 1
+      // console.log("onmessage", event.data)
     },
-    ws_onerror(event) {
-      console.log("ws_onerror", event)
+    ws_onerror (event) {
+      console.log('ws_onerror', event)
       this.destroy()
-      this.timer_id_reconnect = setTimeout(this.ws_init,1000)
+      this.timer_id_reconnect = setTimeout(this.ws_init, 1000)
     },
-    ws_onclose(event) {
-      console.log("ws_onclose", event)
+    ws_onclose (event) {
+      console.log('ws_onclose', event)
       this.destroy()
     },
-    async ws_exec(action, params) {
+    async ws_exec (action, params) {
       return new Promise((resolve, reject) => {
-        let s_ws = new WebSocket(this.ws_host + "/api/?access_token=" + this.ws_token)
-        let timerout_id = setTimeout(() => {
-          s_ws.close()
-          //console.log("s_ws timeout")
-          //reject("timeout")
+        var TestWS = new WebSocket(this.ws_host + '/api/?access_token=' + this.ws_token)
+        var TimeoutID = setTimeout(() => {
+          TestWS.close()
+          // console.log("TestWS timeout")
+          // reject("timeout")
         }, 5000)
-        s_ws.onerror = function(event) {
-          clearInterval(timerout_id)
-          //console.log("s_ws error", event)
-          reject("connect failed")
-          return
+        TestWS.onerror = (event) => {
+          clearInterval(TimeoutID)
+          // console.log("TestWS error", event)
+          reject(new Error('connect failed'))
         }
-        s_ws.onopen = function(event) {
-          clearInterval(timerout_id)
-          s_ws.send(JSON.stringify({
+        TestWS.onopen = (event) => {
+          clearInterval(TimeoutID)
+          TestWS.send(JSON.stringify({
             action: action,
             params: params
           }))
         }
-        s_ws.onmessage = (event) => {
-          clearInterval(timerout_id)
-          if (event.data == "authorization failed") {
-            s_ws.close()
+        TestWS.onmessage = (event) => {
+          clearInterval(TimeoutID)
+          if (event.data === 'authorization failed') {
+            TestWS.close()
             reject(event.data)
             return
           }
           let result = JSON.parse(event.data)
-          //console.log(result)
-          if (result.status != "ok"){
-            reject(result)
+          // console.log(result)
+          if (result.status !== 'ok') {
+            reject(new Error(result))
           }
           resolve(result)
         }
       })
     },
-    destroy() {
-      console.log("destroy")
+    destroy () {
+      console.log('destroy')
       this.qq_online = null
       this.qq_info = null
       this.version_info = null
-      if (this.timer_id){
+      if (this.timer_id) {
         clearInterval(this.timer_id)
         this.timer_id = null
       }
-      if (this.message_rate_timer_id){
+      if (this.message_rate_timer_id) {
         clearInterval(this.message_rate_timer_id)
         this.message_rate_timer_id = null
       }
       this.message_rate = null
       this.message_rate_count = 0
       this.message_rate_timer_id = null
-      if (this.timer_id_reconnect)
+      if (this.timer_id_reconnect) {
         clearInterval(this.timer_id_reconnect)
         this.timer_id_reconnect = null
+      }
       if (this.global_snackbar) {
         this.global_snackbar.close()
       }
     },
-    refresh_status() {
-      let p = this.ws_exec("get_status")
+    refresh_status () {
+      let p = this.ws_exec('get_status')
       p.then((event) => {
         this.qq_online = event.data.online
-        console.log("get_status", event)
+        console.log('get_status', event)
       }).catch(() => {})
       return p
     },
-    refresh_login_info() {
-      let p = this.ws_exec("get_login_info")
+    refresh_login_info () {
+      let p = this.ws_exec('get_login_info')
       p.then((event) => {
         this.qq_info = event.data
-        //console.log("get_login_info", event.data)
+        // console.log("get_login_info", event.data)
       }).catch(() => {})
       return p
     },
-    refresh_version_info() {
-      let p = this.ws_exec("get_version_info")
+    refresh_version_info () {
+      let p = this.ws_exec('get_version_info')
       p.then((event) => {
         this.version_info = event.data
       })
       return p
     },
-    timer_tick() {
+    timer_tick () {
       this.refresh_status()
-      .then((event) => {
-        //console.log("timer_status_then", event)
-      })
-      .catch((event) => {
-        console.log("timer_status_catch", event)
-      })
+        .then((event) => {
+          // console.log("timer_status_then", event)
+        })
+        .catch((event) => {
+          console.log('timer_status_catch', event)
+        })
     },
     // test func
-    bbb() {
-      console.log("Fuck.")
+    bbb () {
+      console.log('Fuck.')
     }
-
-
-
   }
 }
 export default e
