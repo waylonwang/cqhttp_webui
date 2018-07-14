@@ -2,6 +2,9 @@
 
 > 以 https://github.com/richardchien/coolq-http-api/ 为后端的WeUI
 
+## 已实现效果展示
+![pic_1](https://github.com/ma6254/cqhttp_webui/raw/master/src/assets/a1.gif)
+
 ## Build Setup
 
 ``` bash
