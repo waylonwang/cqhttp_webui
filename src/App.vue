@@ -166,6 +166,7 @@ let e = {
         .catch((event) => {
           if (event === 'authorization failed') {
             console.log('ws_init_catch', event)
+            if (this.global_snackbar) this.global_snackbar.close()
             this.global_snackbar = mdui.snackbar({message: 'Token无效', timeout: 0, closeOnOutsideClick: false, buttonText: 'x'})
             return
           }
@@ -181,9 +182,17 @@ let e = {
           }
           if (event.status) {
             console.log('ws_init_catch', event)
+            if (this.global_snackbar) this.global_snackbar.close()
+            this.global_snackbar = mdui.snackbar({message: '返回错误状态码: ' + event.status, timeout: 0})
             return
           }
           console.log('ws_init_catch_unknow', event)
+          if (this.global_snackbar) this.global_snackbar.close()
+          this.global_snackbar = mdui.snackbar({message: '错误: ' + event, timeout: 0})
+          if (this.timer_id_reconnect) {
+            clearInterval(this.timer_id_reconnect)
+          }
+          this.timer_id_reconnect = setTimeout(this.ws_init, 5000)
         })
     },
     ws_onopen (event) {
