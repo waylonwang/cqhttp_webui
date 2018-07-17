@@ -7,7 +7,8 @@
 
 ## Demo
 > Demo页面的托管和Pages服务由coding.net支持
-> Demo页面可能会有css未加载的bug，推荐自行build
+
+> Demo页面可能会有css未加载以及跟发布版本不统一的问题, 推荐自行build
 
 ![coding_logo](https://dn-coding-net-production-static.qbox.me/static/9348be98ed46c1cd972743184b76fe73.png)
 

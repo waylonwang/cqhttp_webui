@@ -102,7 +102,7 @@
               <span v-if="i.func === 'at'" class="mdui-text-color-red">
                 {{ '@' + i.opts['qq'] }}
               </span>
-              <img v-if="i.func === 'image'" :src="i.opts.url" style="height: 150px;width: auto;"/>
+              <img v-if="i.func === 'image'" referrerpolicy="no-referrer" :src="i.opts.url" style="height: 150px;width: auto;"/>
             </span></td>
             </tr>
           </tbody>
