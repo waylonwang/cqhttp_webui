@@ -1,5 +1,5 @@
 {
-  "name": "aaa",
+  "name": "cqhttp_webui",
   "version": "1.0.0",
   "description": "A Vue.js project",
   "author": "ma6254",
@@ -14,13 +14,13 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "cq-websocket": "^1.2.6",
-    "cqhttp": "^1.0.3",
-    "koa-cors": "^0.0.16",
+    "material-design-icons-iconfont": "^3.0.3",
     "mdui": "^0.4.1",
     "vue": "^2.5.2",
     "vue-cookie": "^1.1.4",
-    "vue-router": "^3.0.1"
+    "vue-moment": "^4.0.0",
+    "vue-router": "^3.0.1",
+    "vuetify": "^1.1.4"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

@@ -2,8 +2,14 @@
 
 > 以 https://github.com/richardchien/coolq-http-api/ 为后端的WeUI
 
-## 已实现效果展示
+## 效果展示
 ![pic_1](https://github.com/ma6254/cqhttp_webui/raw/master/src/assets/a1.gif)
+
+## Demo
+> Demo页面的托管和Pages服务由coding.net支持
+> ![coding_logo](https://dn-coding-net-production-static.qbox.me/static/9348be98ed46c1cd972743184b76fe73.png)
+
+[点击这里](http://sand12.coding.me/cqhttp_webui_demo/)
 
 ## Build Setup
 

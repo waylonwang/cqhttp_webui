@@ -16,18 +16,28 @@
           <span>|</span>
           <span :class=' ws ? ( ws.readyState==1 ? "mdui-text-color-blue" : "mdui-text-color-red" ) : "mdui-text-color-red" '>{{ ws ? (ws.readyState==1 ? "O" : "X") : "X" }}</span>
         </a>
-        <a href="https://github.com/ma6254/" target="view_window" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">help</i></a>
+        <a href="https://github.com/ma6254/cqhttp_webui" target="view_window" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">help</i></a>
         <a href="javascript:;" class="mdui-btn mdui-btn-icon" @click="open_setting"><i class="mdui-icon material-icons">settings</i></a>
       </div>
     </div>
 
     <div class="mdui-drawer mdui-drawer-close mdui-color-grey-100" id="drawer" overlay=true>
-      <ul class="mdui-list">
-        <li class="mdui-list-item mdui-ripple" @click="jump('#')">
-          <i class="mdui-list-item-icon mdui-icon material-icons">home</i>
+      <div class="mdui-list" mdui-collapse="{accordion: true}">
+        <li class="mdui-list-item mdui-ripple">
+          <i class="mdui-list-item-icon mdui-icon material-icons">dashboard</i>
           <div class="mdui-list-item-content">概览</div>
         </li>
-      </ul>
+        <li class="mdui-list-item mdui-ripple">
+          <i class="mdui-list-item-icon mdui-icon material-icons">insert_link</i>
+          <div class="mdui-list-item-content">/Api/接口调试</div>
+          <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+        </li>
+        <li class="mdui-list-item mdui-ripple">
+          <i class="mdui-list-item-icon mdui-icon material-icons">insert_link</i>
+          <div class="mdui-list-item-content">/Event/接口调试</div>
+          <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+        </li>
+      </div>
     </div>
 
     <div class="mdui-container">
@@ -40,8 +50,6 @@
 
 <script>
 import mdui from 'mdui'
-mdui.mutation()
-
 let e = {
   name: 'App',
   data () {
@@ -67,6 +75,7 @@ let e = {
   },
   mounted () {
     console.log('mounted')
+    console.log('env', process.env)
     this.ws_init()
   },
   beforeDestroy () {
@@ -199,7 +208,7 @@ let e = {
         return
       }
       this.message_rate_count += 1
-      // console.log("onmessage", event.data)
+      this.$emit('ws_onmessage', JSON.parse(event.data))
     },
     ws_onerror (event) {
       console.log('ws_onerror', event)
