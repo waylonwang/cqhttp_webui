@@ -96,13 +96,18 @@
             </td>
             <td><span v-for="i in data.message" :key="i.hash">
               <span v-if="i.func === null">{{ i.text }}</span>
-              <span v-if="i.func === 'face'" class="mdui-text-color-orange">
-                {{ '[表情: ' + $cqcode.FaceCode[i.opts['id']] + ']' }}
+              <span v-else-if="i.func === 'face'" class="mdui-text-color-orange" style="text-decoration:underline;">
+                {{ '表情:' + $cqcode.FaceCode[i.opts['id']] }}
               </span>
-              <span v-if="i.func === 'at'" class="mdui-text-color-red">
+              <span v-else-if="i.func === 'at'" class="mdui-text-color-red" style="text-decoration:underline;">
                 {{ '@' + i.opts['qq'] }}
               </span>
-              <img v-if="i.func === 'image'" referrerpolicy="no-referrer" :src="i.opts.url" style="height: 150px;width: auto;"/>
+              <span v-else-if="i.func === 'shake'" class="mdui-text-color-red" style="text-decoration:underline;">{{ '抖动' }}</span>
+              <img v-else-if="i.func === 'image'" referrerpolicy="no-referrer" :src="i.opts['url']" style="height: 150px;width: auto;"/>
+              <a v-else-if="i.func === 'share'" :href="i.opts['url']" target="view_window">{{ i.opts['title'] }}</a>
+              <span v-else-if="i.func === 'dice'" class="mdui-text-color-green-500" style="text-decoration:underline;">{{ '掷骰子:' + i.opts['type'] }}</span>
+              <span v-else-if="i.func === 'rps'" class="mdui-text-color-green-500" style="text-decoration:underline;">{{ '猜拳:' + (i.opts['type'] === '1' ? '石头' : i.opts['type'] === '2' ? '剪刀' : i.opts['type'] === '3' ? '布' : 'unknow' ) }}</span>
+              <span v-else class="mdui-color-grey-500" style="text-decoration:underline;">{{ 'CQ码: ' + JSON.stringify(i) }}</span>
             </span></td>
             </tr>
           </tbody>
