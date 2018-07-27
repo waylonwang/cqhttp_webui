@@ -1,11 +1,10 @@
 <template>
-<div id="Overview" class="">
-    <p />
-    <div class="mdui-row">
+<div id="Overview" class="mdui-m-y-1">
+    <div class="mdui-row mdui-m-y-1" ref="headbar">
       <div class="mdui-col-xs-12 mdui-col-md-3 mdui-hidden-sm-down">
-        <div class="mdui-card mdui-color-blue mdui-hoverable">
-          <div class="mdui-card-media">
-            <img><h1 class="mdui-text-right mdui-m-r-1 mdui-text-color-white-text"><p />
+        <div class="mdui-card mdui-color-blue mdui-hoverable" ref="headbar_1">
+          <div class="mdui-card-media" :style="{height: headbar_height}">
+            <img><h1 class="mdui-text-right mdui-text-color-white-text headbar">
               <span class="mdui-typo-display-2" :class="[qq_online ? '' : 'mdui-text-color-red']">{{ qq_online ? "在线" : "离线" }}</span>
             </h1></img>
             <div class="mdui-card-media-covered mdui-card-media-covered-transparent mdui-card-media-covered-top">
@@ -14,17 +13,15 @@
                 <div class="mdui-card-primary-subtitle">Online</div>
               </div></div></div></div></div>
       <div class="mdui-col-xs-12 mdui-col-md-3">
-        <div class="mdui-card mdui-color-cyan mdui-hoverable">
-          <div class="mdui-card-media">
-            <img class="mdui-typo"><h1 class="mdui-text-right mdui-text-color-white-text"><p />
-              <div class="mdui-toolbar mdui-m-r-1">
-                <div class="mdui-toolbar-spacer mdui-typo-display-2 mdui-text-right">
-                  {{ message_rate !== null? message_rate : "N/A"  }}
-                </div>
-                <div class="mdui-typo-subheading-opacity mdui-m-x-1">
-                  <span>{{ message_rate !== null ? '次/60s' : "" }}</span>
-                </div>
-              </div>
+        <div class="mdui-card mdui-color-cyan mdui-hoverable" ref="headbar_2">
+          <div class="mdui-card-media" :style="{height: headbar_height}">
+            <img><h1 class="mdui-text-right mdui-text-color-white-text headbar">
+                <span class="mdui-typo-display-2 mdui-text-right">
+                  {{ message_rate !== null? message_rate : null }}
+                </span>
+                <span class="mdui-typo-subheading-opacity">
+                  {{ message_rate !== null ? '次/60s' : null }}
+                </span>
             </h1></img>
             <div class="mdui-card-media-covered mdui-card-media-covered-transparent mdui-card-media-covered-top">
               <div class="mdui-card-primary">
@@ -32,8 +29,8 @@
                 <div class="mdui-card-primary-subtitle">Message Rate</div>
               </div></div></div></div></div>
       <div class="mdui-col-xs-12 mdui-col-md-3">
-        <div class="mdui-card mdui-color-green mdui-hoverable">
-          <div class="mdui-card-media">
+        <div class="mdui-card mdui-color-green mdui-hoverable" ref="headbar_3">
+          <div class="mdui-card-media" :style="{height: headbar_height}">
             <div class="mdui-row mdui-p-r-1 mdui-p-t-1">
               <div class="mdui-col-xs-9 mdui-clearfix">
                </div>
@@ -51,17 +48,13 @@
                 <div class="mdui-card-primary-subtitle">User Info</div>
               </div></div></div></div></div>
       <div class="mdui-col-xs-12 mdui-col-md-3  mdui-hidden-sm-down">
-        <div class="mdui-card mdui-color-orange mdui-hoverable">
-          <div class="mdui-card-media">
-            <img><h1><p />
-              <div class="mdui-toolbar mdui-text-color-white-text">
-                <span class="mdui-toolbar-spacer mdui-typo-display-1 mdui-text-right">
-                    {{ version_info ? version_info.plugin_version : "N/A" }}
+        <div class="mdui-card mdui-color-orange mdui-hoverable" ref="headbar_4">
+          <div class="mdui-card-media" :style="{height: headbar_height}">
+            <img><h1 class="headbar">
+                <span class="mdui-text-color-white-text mdui-toolbar-spacer mdui-typo-display-2 mdui-text-right">
+                    {{ version_info ? version_info.plugin_version : null }}
                 </span>
-                <div class="mdui-typo-caption-opacity mdui-m-x-1">
-                  <span>{{ version_info ? 'b(' +version_info.plugin_build_number + ')' : "N/A" }}</span>
-                </div>
-              </div>
+                <span class="mdui-typo-title-opacity mdui-text-color-black-icon mdui-m-x-1">{{ version_info ? 'b(' +version_info.plugin_build_number + ')' : null }}</span>
             </h1></img>
             <div class="mdui-card-media-covered mdui-card-media-covered-transparent mdui-card-media-covered-top">
               <div class="mdui-card-primary">
@@ -70,21 +63,24 @@
               </div></div></div></div>
       </div>
     </div>
-    <p />
-    <div class="mdui-card-media">
-      <div class="mdui-table-fluid">
-        <table class="mdui-table" id="msg_log">
-          <thead>
-            <tr>
-              <th>时间(time)</th>
-              <th>相关信息</th>
-              <th>描述</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="data in reversedTableData" :key="data.hash">
+    <div class="mdui-table-fluid mdui-m-y-1">
+      <table class="mdui-table" id="msg_log">
+        <thead>
+          <tr>
+            <th>时间(time)</th>
+            <th class="mdui-table-col-numeric">相关信息(tags)</th>
+            <th>描述(text) 总共: {{ reversedTableData.length }} 条</th>
+          </tr>
+        </thead>
+        <transition-group
+          tag="tbody"
+          name="table-row"
+          enter-active-class="bounceInLeft"
+          leave-active-class="bounceOutRight"
+        >
+          <tr v-for="data in reversedTableData" :key="data.id">
             <td>{{ data.time | moment("gggg.MM.D HH:mm:ss") }}</td>
-            <td>
+            <td class="mdui-table-col-numeric">
               <div >
                 <v-chip class="mdui-color-grey-300 mdui-hoverable mdui-shadow-4" v-for="i in data.info" :key="i.hash">
                   <v-avatar v-if="i.icon_pic_link">
@@ -95,26 +91,40 @@
               </div>
             </td>
             <td><span v-for="i in data.message" :key="i.hash">
-              <span v-if="i.func === null">{{ i.text }}</span>
+              <span v-if="i.func === null" v-html="replaceBr(i.text)"></span>
               <span v-else-if="i.func === 'face'" class="mdui-text-color-orange" style="text-decoration:underline;">
-                {{ '表情:' + $cqcode.FaceCode[i.opts['id']] }}
+                {{ '[表情:' + $cqcode.FaceCode[i.opts['id']] + ']' }}
               </span>
               <span v-else-if="i.func === 'at'" class="mdui-text-color-red" style="text-decoration:underline;">
-                {{ '@' + i.opts['qq'] }}
+                {{ '[@' + i.opts['qq'] + ']' }}
               </span>
-              <span v-else-if="i.func === 'shake'" class="mdui-text-color-red" style="text-decoration:underline;">{{ '抖动' }}</span>
+              <span v-else-if="i.func === 'shake'" class="mdui-text-color-red" style="text-decoration:underline;">{{ ' 抖动 ' }}</span>
               <img v-else-if="i.func === 'image'" referrerpolicy="no-referrer" :src="i.opts['url']" style="height: 150px;width: auto;"/>
-              <a v-else-if="i.func === 'share'" :href="i.opts['url']" target="view_window">{{ i.opts['title'] }}</a>
-              <span v-else-if="i.func === 'dice'" class="mdui-text-color-green-500" style="text-decoration:underline;">{{ '掷骰子:' + i.opts['type'] }}</span>
-              <span v-else-if="i.func === 'rps'" class="mdui-text-color-green-500" style="text-decoration:underline;">{{ '猜拳:' + (i.opts['type'] === '1' ? '石头' : i.opts['type'] === '2' ? '剪刀' : i.opts['type'] === '3' ? '布' : 'unknow' ) }}</span>
-              <span v-else class="mdui-color-grey-500" style="text-decoration:underline;">{{ 'CQ码: ' + JSON.stringify(i) }}</span>
+              <a v-else-if="i.func === 'share'" :href="i.opts['url']" target="view_window">{{ '[' + i.opts['title'] + ']' }}</a>
+              <span v-else-if="i.func === 'dice'" class="mdui-text-color-green-500" style="text-decoration:underline;">{{ '[掷骰子:' + i.opts['type'] + ']' }}</span>
+              <span v-else-if="i.func === 'rps'" class="mdui-text-color-green-500" style="text-decoration:underline;">{{ '[猜拳:' + (i.opts['type'] === '1' ? '石头' : i.opts['type'] === '2' ? '剪刀' : i.opts['type'] === '3' ? '布' : 'unknow' ) + ']' }}</span>
+              <div v-else-if="i.func === 'sign'" class="mdui-card"  style="height: auto;width: 150px;">
+                <div class="mdui-card-media">
+                  <img :src="i.opts['image']"/>
+                  <div class="mdui-card-media-covered mdui-card-media-covered-gradient">
+                    <div class="mdui-card-primary">
+                      <div class="mdui-card-primary-subtitle">{{ i.opts['title'] }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <vue-json-pretty v-else :data="i" deep="1" showLength="true"></vue-json-pretty>
             </span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          </tr>
+          <tr key="last">
+            <td />
+            <td />
+            <td v-if="reversedTableData.length === 0">没有数据</td>
+            <td v-else>{{ '已经到底了,总共' + reversedTableData.length + '条' }}</td>
+          </tr>
+        </transition-group>
+      </table>
     </div>
-    <p />
 </div>
 </template>
 
@@ -134,14 +144,18 @@ export default {
   data () {
     return {
       max_msg_log: 10,
+      headbar_height: null,
       tableData: []
     }
   },
+  updated () {
+  },
   mounted () {
     this.$parent.$on('ws_onmessage', (event) => {
-      console.log('onmessage', event)
+      // console.log('onmessage', event)
       this.msg_log(event)
     })
+    this.headbar_height = this.get_headbar_height()
   },
   methods: {
     test (text) {
@@ -151,6 +165,15 @@ export default {
       }).then((event) => {
         console.log('msg_id', event.data.message_id)
       })
+    },
+    replaceBr (text) {
+      return text.replace(/\n/g, '<br />')
+    },
+    get_headbar_height: function () {
+      if (this.$refs.headbar) {
+        return this.$refs.headbar.offsetHeight + 'px'
+      }
+      return 'auto'
     },
     clear_cookie () {
       this.$cookie.delete('ws_host')
@@ -177,15 +200,17 @@ export default {
       let ret = {
         time: event.time,
         info: [],
-        message: []
+        message: [],
+        id: event.id
       }
+      // console.log('message', event)
       while (this.tableData.length >= this.max_msg_log) {
         this.tableData.shift()
       }
       // 消息
       if (event.post_type === 'message') {
         ret.message = this.$cqcode.Parse(event.message)
-        console.log('message', ret.message)
+        // console.log('message', ret.message)
         ret.info.push({text: '消息(id:' + event.message_id + ')'})
         this.$cqcode.Parse(event.message)
         if (event.message_type === 'private') {
@@ -265,4 +290,11 @@ export default {
 }
 </script>
 <style>
+.headbar {
+  margin: auto;
+  position: absolute;
+  bottom: 16px;
+  right: 8px;
+}
+
 </style>

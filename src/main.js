@@ -5,12 +5,15 @@ import App from './App'
 import router from './router'
 import 'mdui/dist/css/mdui.css'
 import 'vuetify/dist/vuetify.min.css'
-// import 'vuetify/src/stylus/main'
+import 'vue2-animate/dist/vue2-animate.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import SettingPanel from '@/components/SettingPanel'
 import VueCookie from 'vue-cookie'
 import Vuetify from 'vuetify'
 import cqcode from './cqcode'
+import VueJsonPretty from 'vue-json-pretty'
+
+Vue.component('vue-json-pretty', VueJsonPretty)
 
 Vue.use(require('vue-moment'))
 Vue.use(VueCookie)

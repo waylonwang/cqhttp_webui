@@ -14,12 +14,15 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "animate.css": "^3.6.1",
     "material-design-icons-iconfont": "^3.0.3",
     "mdui": "^0.4.1",
     "vue": "^2.5.2",
     "vue-cookie": "^1.1.4",
+    "vue-json-pretty": "^1.4.1-beta.1",
     "vue-moment": "^4.0.0",
     "vue-router": "^3.0.1",
+    "vue2-animate": "^2.0.0",
     "vuetify": "^1.1.4"
   },
   "devDependencies": {

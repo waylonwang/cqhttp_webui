@@ -25,16 +25,20 @@
       <div class="mdui-list" mdui-collapse="{accordion: true}">
         <li class="mdui-list-item mdui-ripple">
           <i class="mdui-list-item-icon mdui-icon material-icons">dashboard</i>
-          <div class="mdui-list-item-content">概览</div>
+          <a class="mdui-list-item-content" href="#/">概览</a>
+        </li>
+        <li class="mdui-list-item mdui-ripple">
+          <i class="mdui-list-item-icon mdui-icon material-icons">dashboard</i>
+          <a class="mdui-list-item-content" href="#/test">测试</a>
         </li>
         <li class="mdui-list-item mdui-ripple">
           <i class="mdui-list-item-icon mdui-icon material-icons">insert_link</i>
-          <div class="mdui-list-item-content">/Api/接口调试</div>
+          <a class="mdui-list-item-content" href="#/test_api">/Api/接口调试</a>
           <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
         </li>
         <li class="mdui-list-item mdui-ripple">
           <i class="mdui-list-item-icon mdui-icon material-icons">insert_link</i>
-          <div class="mdui-list-item-content">/Event/接口调试</div>
+          <div class="mdui-list-item-content" href="#/">/Event/接口调试</div>
           <i class="mdui-collapse-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
         </li>
       </div>
@@ -74,7 +78,7 @@ let e = {
   computed: {
   },
   mounted () {
-    console.log('mounted')
+    // console.log('mounted')
     console.log('env', process.env)
     this.ws_init()
   },
@@ -115,6 +119,12 @@ let e = {
         )
       }
     },
+    format_ws_link (path) {
+      let lll = document.createElement('a')
+      lll.href = this.ws_host
+      // console.log('href', lll)
+      return lll.protocol + '//' + lll.hostname + ':' + lll.port + '/' + path + '/?access_token=' + this.ws_token
+    },
     setting_onconfirm () {
       if (this.ws) {
         this.ws.close()
@@ -130,7 +140,7 @@ let e = {
       return true
     },
     async ws_init () {
-      console.log('ws_init', 'start.')
+      // console.log('ws_init', 'start.')
       if (!this.check_cookie()) {
         this.global_snackbar = mdui.snackbar(
           {
@@ -157,7 +167,7 @@ let e = {
           this.timer_tick()
           this.refresh_login_info()
           this.refresh_version_info()
-          this.ws = new WebSocket(this.ws_host + '/event/?access_token=' + this.ws_token)
+          this.ws = new WebSocket(this.format_ws_link('event'))
           this.ws.onopen = this.ws_onopen
           this.ws.onmessage = this.ws_onmessage
           this.ws.onerror = this.ws_onerror
@@ -204,7 +214,7 @@ let e = {
       this.message_rate_timer_id = setInterval(() => {
         let NewRate = this.message_rate_count * (60000 / this.message_rate_interval)
         if (this.message_rate !== NewRate) {
-          console.log('message_rate_update', NewRate)
+          // console.log('message_rate_update', NewRate)
         }
         this.message_rate = NewRate
         this.message_rate_count = 0
@@ -217,7 +227,9 @@ let e = {
         return
       }
       this.message_rate_count += 1
-      this.$emit('ws_onmessage', JSON.parse(event.data))
+      let data = JSON.parse(event.data)
+      data.id = mdui.JQ.guid()
+      this.$emit('ws_onmessage', data)
     },
     ws_onerror (event) {
       console.log('ws_onerror', event)
@@ -225,12 +237,12 @@ let e = {
       this.timer_id_reconnect = setTimeout(this.ws_init, 1000)
     },
     ws_onclose (event) {
-      console.log('ws_onclose', event)
+      // console.log('ws_onclose', event)
       this.destroy()
     },
     async ws_exec (action, params) {
       return new Promise((resolve, reject) => {
-        var TestWS = new WebSocket(this.ws_host + '/api/?access_token=' + this.ws_token)
+        var TestWS = new WebSocket(this.format_ws_link('api'))
         var TimeoutID = setTimeout(() => {
           TestWS.close()
           // console.log("TestWS timeout")
@@ -258,7 +270,7 @@ let e = {
           let result = JSON.parse(event.data)
           // console.log(result)
           if (result.status !== 'ok') {
-            reject(new Error(result))
+            reject(event.data)
           }
           resolve(result)
         }
@@ -292,7 +304,7 @@ let e = {
       let p = this.ws_exec('get_status')
       p.then((event) => {
         this.qq_online = event.data.online
-        console.log('get_status', event)
+        // console.log('get_status', event)
       }).catch(() => {})
       return p
     },
