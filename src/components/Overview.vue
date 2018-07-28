@@ -1,8 +1,8 @@
 <template>
-<div id="Overview" class="mdui-m-y-1">
-    <div class="mdui-row mdui-m-y-1" ref="headbar">
+<div id="Overview">
+    <div class="mdui-row" ref="headbar">
       <div class="mdui-col-xs-12 mdui-col-md-3 mdui-hidden-sm-down">
-        <div class="mdui-card mdui-color-blue mdui-hoverable" ref="headbar_1">
+        <div class="mdui-card mdui-color-blue mdui-hoverable">
           <div class="mdui-card-media" :style="{height: headbar_height}">
             <img><h1 class="mdui-text-right mdui-text-color-white-text headbar">
               <span class="mdui-typo-display-2" :class="[qq_online ? '' : 'mdui-text-color-red']">{{ qq_online ? "在线" : "离线" }}</span>
@@ -13,7 +13,7 @@
                 <div class="mdui-card-primary-subtitle">Online</div>
               </div></div></div></div></div>
       <div class="mdui-col-xs-12 mdui-col-md-3">
-        <div class="mdui-card mdui-color-cyan mdui-hoverable" ref="headbar_2">
+        <div class="mdui-card mdui-color-cyan mdui-hoverable">
           <div class="mdui-card-media" :style="{height: headbar_height}">
             <img><h1 class="mdui-text-right mdui-text-color-white-text headbar">
                 <span class="mdui-typo-display-2 mdui-text-right">
@@ -29,7 +29,7 @@
                 <div class="mdui-card-primary-subtitle">Message Rate</div>
               </div></div></div></div></div>
       <div class="mdui-col-xs-12 mdui-col-md-3">
-        <div class="mdui-card mdui-color-green mdui-hoverable" ref="headbar_3">
+        <div class="mdui-card mdui-color-green mdui-hoverable">
           <div class="mdui-card-media" :style="{height: headbar_height}">
             <div class="mdui-row mdui-p-r-1 mdui-p-t-1">
               <div class="mdui-col-xs-9 mdui-clearfix">
@@ -47,14 +47,14 @@
                 <div class="mdui-card-primary-title">登录号</div>
                 <div class="mdui-card-primary-subtitle">User Info</div>
               </div></div></div></div></div>
-      <div class="mdui-col-xs-12 mdui-col-md-3  mdui-hidden-sm-down">
-        <div class="mdui-card mdui-color-orange mdui-hoverable" ref="headbar_4">
+      <div class="mdui-col-xs-12 mdui-col-md-3 mdui-hidden-sm-down">
+        <div class="mdui-card mdui-color-orange mdui-hoverable">
           <div class="mdui-card-media" :style="{height: headbar_height}">
             <img><h1 class="headbar">
                 <span class="mdui-text-color-white-text mdui-toolbar-spacer mdui-typo-display-2 mdui-text-right">
                     {{ version_info ? version_info.plugin_version : null }}
                 </span>
-                <span class="mdui-typo-title-opacity mdui-text-color-black-icon mdui-m-x-1">{{ version_info ? 'b(' +version_info.plugin_build_number + ')' : null }}</span>
+                <span class="mdui-typo-title-opacity mdui-text-color-black-icon">{{ version_info ? 'b(' +version_info.plugin_build_number + ')' : null }}</span>
             </h1></img>
             <div class="mdui-card-media-covered mdui-card-media-covered-transparent mdui-card-media-covered-top">
               <div class="mdui-card-primary">
@@ -296,5 +296,7 @@ export default {
   bottom: 16px;
   right: 8px;
 }
-
+.mdui-col-md-3, .mdui-col-xs-12 {
+  margin-top: 8px;
+}
 </style>
