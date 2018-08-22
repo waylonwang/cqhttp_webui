@@ -1,0 +1,21 @@
+version: "3"
+services:
+  cqhttp:
+    image: richardchien/cqhttp
+    volumes: 
+      - "./wine_daemon:/home/user/coolq"
+    ports:
+      - "5911:5911" #VNC port
+      - "7980:7980" #websocket port
+    environment:
+      VNC_PASSWD: "MAX8char" #VNC password
+      FORCE_ENV: "yes"
+      CQHTTP_access_token: "12345" #token
+      CQHTTP_use_ws: "yes"
+      CQHTTP_ws_port: 7980
+      CQHTTP_ws_host: "0.0.0.0"
+      CQHTTP_post_message_format: "array" #message format string和arrar
+  webui:
+    build: .
+    ports:
+      - "8080:8080"
